@@ -35,6 +35,30 @@ namespace FirstMicroservice.Controllers
             }
             return list;
         }
+        [HttpGet("GetFilterList/{fromYear}/{fromMounth}/{fromDay}/To/{toYear}/{toMounth}/{toDay}")]
+        public IActionResult GetDataWeather([FromRoute] int fromYear, [FromRoute] int fromMounth, [FromRoute] int fromDay,
+                                                  [FromRoute] int toYear, [FromRoute] int toMounth, [FromRoute] int toDay)
+        {
+            DateTime fromDate = new DateTime(fromYear, fromMounth, fromDay);
+            DateTime toDate = new DateTime(toYear, toMounth, toDay);
+            List<MyWeather> list = new List<MyWeather>();
+            int day = _weatherList.Count;
+            string listX = string.Empty;
+            for (int i = 0; i < day; i++)
+            {
+                if (_weatherList[i].Date >= fromDate && _weatherList[i].Date <= toDate)
+                {
+                    list.Add(_weatherList[i]);
+
+                }
+            }
+            foreach (var item in list)
+            {
+                listX += $"Температура в цельсиях: {item.TemperatureC}\n" +
+                       $"Дата: {item.Date.ToShortDateString()}\n";
+            }
+            return Ok(listX);
+        }
         [HttpPost("Create/{temperatureC}/{year}/{mounth}/{day}")]
         public IActionResult CreateFromRoute([FromRoute] int temperatureC,[FromRoute] int year, [FromRoute] int mounth, [FromRoute] int day)
         {
